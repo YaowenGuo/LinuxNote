@@ -47,5 +47,5 @@ scp identity.pub .tw:.ssh/authorized_keys
 
 
 可以看到，使用scp进行文件拷贝，是要知道源文件的路径的。如过想从远端拷贝文件到本地，对于不知道准确的路径名（可能会记错）或者知道路径却不知道文件名。这时候希望
-先到远端电脑看一下文件。这就牵涉到登录远端远端。在Unix和类Unix之间访问，使用ｓｓｈ是最便捷的方式了。[可以查看file_transfor_ssh来查看详细使用方法]（file_transfor_ssh.md)
+先到远端电脑看一下文件。这就牵涉到登录远端远端。在Unix和类Unix之间访问，使用ｓｓｈ是最便捷的方式了。[可以查看file_transfor_ssh来查看详细使用方法]（https://github.com/YaowenGuo/LinuxNote/edit/master/file_transfor_ssh.md)
 
