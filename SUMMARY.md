@@ -5,5 +5,7 @@
   * [cut copy past](vim/cut-copy-past.md)
   * [back & redo](vim/cut-copy-past/back-and-redo.md)
   * [show num & jump](vim/show-num-and-jump.md)
+  * [tab](vim/tab.md)
 * [Command](command.md)
   * [scp](command/scp.md)
+  * [netword access](netword-access.md)
