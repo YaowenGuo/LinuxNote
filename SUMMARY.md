@@ -1,11 +1,12 @@
 # Summary
 
 * [Introduction](README.md)
-* [VIM](vim.md)
+* [VIM](vim/README.md)
   * [cut copy past](vim/cut-copy-past.md)
   * [back & redo](vim/cut-copy-past/back-and-redo.md)
   * [show num & jump](vim/show-num-and-jump.md)
-  * [tab](vim/tab.md)
+  * [setting](vim/tab.md)
+  * [Hex text](vim/hex.md)
 * [Command](command.md)
   * [scp](command/scp.md)
   * [netword access](command/netword-access.md)
