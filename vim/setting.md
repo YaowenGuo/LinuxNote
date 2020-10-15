@@ -27,8 +27,7 @@ TAB替换为空格：
 
 
 
-# 显示空白符
-
+## 显示空白符
 
 
 在Linux中，cat -A file可以把文件中的所有可见的和不可见的字符都显示出来，在Vim中，如何将不可见字符也显示出来呢？当然，如果只是想在Vim中查看的话，可以这样:%!cat -A在Vim中调用cat转换显示。这样的做法不便于编辑，其实Vim本身是可以设置显示不可见字符的。
@@ -41,3 +40,16 @@ set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
 set list
 ```
 最后，:set nolist可以回到正常的模式。
+
+
+
+## 插件
+
+vim 的插件管理器特别多，这里使用 vim-plug
+
+https://github.com/junegunn/vim-plug
+
+[配置文件 demo，重命名为 .vimrc, 放到用户 home 目录即可](vimrc)
+
+## 配置文件编写
+
