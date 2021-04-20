@@ -53,10 +53,11 @@ int main() {
 
 分步执行
 
-1. 预处理: 宏的替换，头文件的导入。
+1. 预处理: 宏的替换、头文件的导入，以及类似#if的处理。
 
 ```c
 clang -E hello.cpp
+
 # 1 "hello.cpp"
 # 1 "<built-in>" 1
 # 1 "<built-in>" 3
@@ -101,7 +102,7 @@ llvm-dis < hello.bc | less
 llvm-dis hello.bc -o -
 ```
 
-3. 汇编: 
+3. 汇编: 将LLVM 中间代码编译为汇编代码
 
 ```
 clang++ -S -mllvm --x86-asm-syntax=intel hello.bc
@@ -151,16 +152,41 @@ _main:                                  ; @main
 ```
 
 
-4. 汇编: 将LLVM 中间代码编译为汇编
+4. 汇编: 将汇编代码编译为具体平台的机器码
+
+
+```shell
+clang -c hello.s -o hello.o
+```
+
+5. 链接
+
+链接成为库文件可以分为两种：静态库（.a、.lib...）和动态库（.so、.dll...）windows上对应的是.lib .dll linux上对应的是.a .so。不同平台的文件名后缀可能不同。
+
+静态库：
+
+之所以称为【静态库】，是因为在链接阶段，将目标文件.o与引用到的库一起链接排列到可执行文件中。在运行时整个文件加载到内存运行。一个静态库可以简单看成是一组目标文件（.o/.obj文件）的集合。
+
+
+打包静态库：
+
+```shell
+ar -crv hello.a hello.o # 可以有更多 .o 文件。
+```
+
+静态库：
+
+动态库在程序编译时并不会被连接到目标代码中，而是在程序运行是才被载入。不同的应用程序如果调用相同的库，那么在内存里只需要有一份该共享库的实例。
+
+```shell
+gcc hello.s -shared -o hello.so
+```
 
 
 
 
 
-
-> 查看编译结果
-
-clang -rewrite-objc hello.cpp
+## 其它编译工具
 
 
 > 查看操作内部命令，可以使用 -### 命令
@@ -172,4 +198,69 @@ clang -### hello.cpp -o main
 clang -E hello.cpp
 
 
+预处理完成后就会进行词法分析，这里会把代码切成一个个 Token，比如大小括号，等于号还有字符串等。
 
+```
+clang -fmodules -fsyntax-only -Xclang -dump-tokens main.m
+```
+
+clang 命令参数
+
+```
+-x 编译语言比如objective-c
+-arch 编译的架构，比如arm7
+-f 以-f开头的。
+-W 以-W开头的，可以通过这些定制编译警告
+-D 以-D开头的，指的是预编译宏，通过这些宏可以实现条件编译
+-iPhoneSimulator10.1.sdk 编译采用的iOS SDK版本
+-I 把编译信息写入指定的辅助文件
+-F 需要的Framework
+-c 标识符指明需要运行预处理器，语法分析，类型检查，LLVM生成优化以及汇编代码生成.o文件
+-o 编译结果
+```
+
+
+## 交叉编译
+
+每种主机/目标(host/target)都有自己的一组二进制文件、头文件、库等组合。要想生成目标主机的可执行程序，就要指定目标主机的类型。`-target <triple>` 选项用于指定编译的主机类型。
+
+
+triple 的一般格式为<arch><sub>-<sys>-<abi>，其中：
+
+arch = x86_64、i386、arm、aarch、thumb、mips等。
+sub = v5, v6m, v7a, v7m等。
+vendor = pc, apple, nvidia, ibm,等。
+sys = none, linux, win32, darwin, cuda等。
+abi = eabi, gnu, android, macho, elf等。
+
+
+// -arch 表示要编译的架构 这里为arm64.
+// -isysroot 指定头文件的根路径
+```
+$ clang -arch arm64 -o hello hello.c –
+```
+- --sysroot=XX
+
+使用XX作为这一次编译的头文件与库文件的查找目录，查找XX下面的 usr/include、usr/lib目录。
+
+- -isysroot XX
+头文件查找目录,覆盖--sysroot ，查找 XX/usr/include。什么意思，比如说"gcc --sysroot=目录1 main.c"，如果main.c中依赖于头文件和库文件，则会到目录1中的user/include和user/lib目录去查找，而如果"gcc --sysroot=目录1 -isysroot 目录2 main.c"意味着会查找头文件会到目录2中查找而非--sysroot所指定的目录1下的/usr/include了，当然查找库文件还是在目录1下的user/lib目录去查找。
+
+- -isystem XX
+指定头文件查找路径（直接查找根目录）。比如"gcc --sysroot=目录1 -isysroot 目录2 -isystem 目录3  -isystem 目录4 main.c"意味着头文件查找除了会到目录2下的/usr/include，还会到isystem指定的目录3和目录4下进行查找，注意：这个isystem指定的目录就是头文件查找的全路径，而非像isysroot所指定的目录还需要定位到/usr/include目录。
+
+- -IXX
+头文件查找目录。
+
+其查找头文件的优先级为：
+- -I -> -isystem -> sysroot
+
+比如说：“gcc --sysroot=目录1 -isysroot 目录2 -isystem 目录3  -isystem 目录4 -I目录5 main.c”，其头文件首先会去目录5找，如果没找到则会到目录3和4找，如果还没找到则会到目录2找。
+
+- -LXX
+指定库文件查找目录。
+- -lxx.so
+指定需要链接的库名。
+
+
+https://www.cnblogs.com/webor2006/p/9946061.html
