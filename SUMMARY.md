@@ -21,3 +21,9 @@
   * [Env](shell/env.md)
 * [Net](net/README.md)
   * [proxy](net/proxy.md)
+
+* build
+  * [CMake](build/cmake/README.md)
+  * [GN]
+  * [Gradle](build/gradle/README.md)
+    * [commend](build/gradle/commend.md)
