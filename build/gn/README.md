@@ -45,44 +45,53 @@ GN是一种元构建系统，来代替 GYP 生成 Ninja 构建文件（Ninja bui
 缺点:
 为 chromium 项目编写的专用构建系统，并不容易在其他项目使用。好的是高版本的 CMake 已经可以生成 Ninga 构建文件了。
 
-**跟 CMake 等许多构建软件类似，GN 也是随项目一起进行版本控制和分发的。** 由于 GN 是为 Chromium 构建设计的项目，并没有对自动最小的脚本做特殊处理，所以想要用于其它项目的门槛比较高。甚至不同项目会根据需要对 GN 进行定制，因此需要查看具体项目的 gn 构建文档。当然，为了方便使用，[gn 项目](https://gn.googlesource.com/gn/)的 `examples/simple_build` 目录提供了一个最小的 GN 配置。
+由于 GN 是为 Chromium 构建设计的项目，并没有对自动最小的脚本做特殊处理，所以想要用于其它项目的门槛比较高。甚至不同项目会根据需要对 GN 进行定制，因此需要查看具体项目的 gn 构建文档。当然，为了方便使用，[gn 项目](https://gn.googlesource.com/gn/)的 `examples/simple_build` 目录提供了一个最小的 GN 配置。
 
 
 **gn 和 gclient 是为 chromium 专门构建的脚本工具，想要使用可以使用 CMake 代替**
 
 ### 运行GN
 
-gn 实际上是depot_tools下的一个脚本，所以要先[配置好 depot_tools 的 环境](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)。
+要运行 gn 有两种方式
+
+方法一适合在有 `depot_tools` 的系统与 `depot_tools` 配合使用，兼容性更好。
+方法二适合仅使用 gn 程序，方便创建自己的 gn 项目，或者用于学习 gn 测试。
+
+#### 方式一：使用[depot_tools](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)中的 gn.
+
+对于大型项目，**GN 也是随项目一起进行版本控制和分发的。** 例如 webrtc/chromium 项目的 gn 位于项目目录的 `buildtools/[mac/linux/win]` 目录中。`mac/linux/win`分别是苹果、linux和 Windows 的目录，具体在那个一个目录，要看你的电脑是什么平台，之前说过了，根据你的开发电脑不同，gn 能够下载不同的依赖。 depot_tools 下的 gn 并不是 gn 构建程序。实际上是一个用户查找 gn 的脚本。该脚本的查找过程是：
+
+- 先检查项目是否是 gclient 的项目，如果是,则使用 gclient 项目配置的 gn 目录。例如 chromium 在 `src/buildtools/[mac/linux/win]` 目录。
+
+- 如果不存在，则使用 `CHROMIUM_BUILDTOOLS_PATH` 环境变量拼接上 `[mac/linux/win]/gn` 
+
+然而一起遗憾的是，depot_tools 目录下并没有 gn 程序。因此需要配置 `CHROMIUM_BUILDTOOLS_PATH` 为 `chromium/webrtc` 等现有项目的目录，也可以根据官方文档，直接使用[自己编译 gn](https://gn.googlesource.com/gn/)). 然后将 `CHROMIUM_BUILDTOOLS_PATH` 设置为编译好的 gn 目录。
+
+另外，因为是使用 `depot_tools` 的 gn，要先[配置好 depot_tools 的 环境](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)。
+
+#### 方法二：自己编译 gn
+
+这个[官网文档有](https://gn.googlesource.com/gn/)，就不介绍了。编译好后，将其路径加到 `PATH` 中。
+
 
 
 ### 生成构建文件
 
 在GYP中，有两个特定的目录Debug和Release目录，分别用于生成Debug版本和Release版本。在GN中，采用了更灵活的方式，你随便指定一个目录，比如为了测试，定义一个test输出目录，可以采用如下的命令：
 
-```
+```shell
 gn gen out/test
 ```
 
-那如何区分 Debug版本和Release版本呢？GN通过传递参数来解决。也就是说，现在光通过输出目录是无法确定到底是Debug版本和Release版本，而要取决于传递的构建参数。
-
-gn args out/test
-
-可以使用下面的命令列出可用的构建参数和它们的缺省值：
-
-gn args --list out/test
 
 
 
-### 项目结构
 
-```
-root_dir
-|- .gclient 配置编译目标平台、项目远程地址（gn 工具天生是协作式的）。
-|- .gclient_entries 各个子项目地址，gn 能够配置多个模块成为单独的项目，不同模块组合不同的项目。
-|- src 源码
-|   |- .gn 项目根编译配置
-|   |- 
-|
-```
+> 查看文档
+[gn 编译安装](https://gn.googlesource.com/gn/)
 
-gn 项目现在会检查 GClient 目录必须是一个 GClient 的 solution。紧
+[gn 快速入门](https://gn.googlesource.com/gn/+/HEAD/docs/quick_start.md)
+
+[gn 语言](https://chromium.googlesource.com/chromium/src/tools/gn/+/48062805e19b4697c5fbd926dc649c78b6aaa138/docs/language.md)
+
+[gn 参考手册](https://gn.googlesource.com/gn/+/master/docs/reference.md)
