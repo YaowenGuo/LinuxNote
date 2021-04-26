@@ -65,7 +65,7 @@ GN是一种元构建系统，来代替 GYP 生成 Ninja 构建文件（Ninja bui
 
 - 如果不存在，则使用 `CHROMIUM_BUILDTOOLS_PATH` 环境变量拼接上 `[mac/linux/win]/gn` 
 
-然而一起遗憾的是，depot_tools 目录下并没有 gn 程序。因此需要配置 `CHROMIUM_BUILDTOOLS_PATH` 为 `chromium/webrtc` 等现有项目的目录，也可以根据官方文档，直接使用[自己编译 gn](https://gn.googlesource.com/gn/)). 然后将 `CHROMIUM_BUILDTOOLS_PATH` 设置为编译好的 gn 目录。
+然而遗憾的是，depot_tools 目录下并没有 gn 程序。因此需要配置 `CHROMIUM_BUILDTOOLS_PATH` 为 `chromium/webrtc` 等现有项目的目录，也可以根据官方文档，直接使用[自己编译 gn](https://gn.googlesource.com/gn/)). 然后将 `CHROMIUM_BUILDTOOLS_PATH` 设置为编译好的 gn 目录。
 
 另外，因为是使用 `depot_tools` 的 gn，要先[配置好 depot_tools 的 环境](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)。
 
