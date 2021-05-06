@@ -16,15 +16,24 @@ solutions = [
     }
   },
 ]
+
+target_os = []
 ```
 
-solutions 列表的每一项都是一个 python 字典对象。
+> solutions 列表的每一项都是一个 python 字典对象。
 
 - url: 项目检出的仓库。 gclient期望检出的解决方案将包含一个名为DEPS的文件，该文件又定义了必须检出的特定部分，以创建用于构建和开发解决方案的软件的工作目录布局。
 
 - deps_file： 一个文件名，而不是路径。存在于 name 定义的项目目录下，用于定义依赖项列表。 此标记是可选的，默认为DEPS。
 
 - custom_deps： 一个包含可选字段的字典类型，可选字段用于覆盖 DEPS 文件中的条目。可以用于定制使用本地目录，以避免检出和更新特性组件，或将给定组件的本地工作目录副本同步到其他特定版本，分支或树的头部。 它也可以用于附加DEPS文件中不存在的新条目。
+
+> target_os
+
+> target_os_only
+
+> cache_dir
+
 
 ## .gclient_entries 文件
 
@@ -48,3 +57,35 @@ deps = {
 
 
 [GClient 使用](https://www.cnblogs.com/xl2432/p/11596695.html)
+
+
+## 指令
+
+获取 gclient 的根目录，在项目的任意子目录中执行：
+
+```
+$ gclient root
+```
+
+> 指定 `.gclient` 文件内容
+
+```
+$ gclient config --spec 'solutions = [
+  {
+    "name": "src",
+    "url": "https://webrtc.googlesource.com/src.git",
+    "deps_file": "DEPS",
+    "managed": False,
+    "custom_deps": {},
+  },
+]
+target_os = ["linux", "android", "mac"]
+'
+```
+
+> 参数
+
+- --nohooks： 
+- --no-history
+- --with_branch_heads
+

@@ -1,6 +1,6 @@
 # dept tools 的 fetch
 
-fetch 是对版本控制命令的一个封装，简化版本控制操作。
+fetch 是对版本控制命令的一个封装，简化版本控制操作。包含了 gclient 的 config 和 sync 等操作。
 
 ```
 fetch [option1 [option2 ...]] <config> [--property=value [--property2=value2 ...]]
