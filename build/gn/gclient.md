@@ -2,7 +2,7 @@
 
 GClient 是一个管理多个代码模块组成一个项目的工具，这些模块可以来自不同的代码仓库。它包装了基础的代码仓库管理命令，以提供对目录树中多个子工作目录的更新、状态查询、和 diff 差异命令。类比一下 repo 或 git submoudles。 相比之下 gclient 支持根据平台检出不同依赖。例如根据要开发的项目是 IOS 还是安卓检出不同的依赖库和工具链。
 
-在用于包含项目的目录中，包含一个 `.gclient` 用于控制不同仓库的组合。`.gclient` 文件时 python 脚本格式，内部定义了一个如下格式名为 `solution` 的列表：
+在用于包含项目的目录中，包含一个 `.gclient` 用于控制不同仓库的组合。在子目录下执行 gclient 指令时，也是递归寻找父目录中的 `.gclient` 文件所在的目录作为项目根目录。`.gclient` 文件是 python 脚本格式，内部定义了一个如下格式名为 `solution` 的列表：
 
 ```
 solutions = [
@@ -20,17 +20,18 @@ solutions = [
 target_os = []
 ```
 
+
+
 > solutions 列表的每一项都是一个 python 字典对象。
 
+- name: checkout 出源码的目录名。跟 `.gclient` 放在同一目录。
 - url: 项目检出的仓库。 gclient期望检出的解决方案将包含一个名为DEPS的文件，该文件又定义了必须检出的特定部分，以创建用于构建和开发解决方案的软件的工作目录布局。
 
 - deps_file： 一个文件名，而不是路径。存在于 name 定义的项目目录下，用于定义依赖项列表。 此标记是可选的，默认为DEPS。
 
 - custom_deps： 一个包含可选字段的字典类型，可选字段用于覆盖 DEPS 文件中的条目。可以用于定制使用本地目录，以避免检出和更新特性组件，或将给定组件的本地工作目录副本同步到其他特定版本，分支或树的头部。 它也可以用于附加DEPS文件中不存在的新条目。
 
-> target_os
-
-> target_os_only
+- target_os 和 target_os_only 这个可选的条目可以指出特殊的平台，根据平台来checkout出不同代码，如 `target_os = ['android']` 如果target_os_only值为True的化，那么，仅仅checkout出对应的代码。
 
 > cache_dir
 
