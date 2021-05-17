@@ -9,6 +9,16 @@
 
 假设您可以让 Clang 发出正常的LLVM字节代码，然后可以使用llc编译为汇编语言，并使用其--x86-asm-syntax=intel选项以英特尔语法获得结果。
 
+```
+g++ simplegrep.c -o simplegrep -I/usr/local/include/hs -L/usr/local/lib64/ -lhs -lhs_runtime
+
+-I：头文件目录
+
+-L:静态库目录
+
+-l:静态库名字
+```
+
 ## C/C++ 编译流程
 
 > 查看编译的步骤
@@ -264,3 +274,22 @@ $ clang -arch arm64 -o hello hello.c –
 
 
 https://www.cnblogs.com/webor2006/p/9946061.html
+
+
+## 问题排查
+
+### 查找静态库中的函数
+
+```
+$ nm --demangle libwebrtc.a | grep -i webrtc::CreatePeerConnectionFactory
+0000000000000000 T webrtc::CreatePeerConnectionFactory(rtc::Thread*, rtc::Thread*, rtc::Thread*, rtc::scoped_refptr<webrtc::AudioDeviceModule>, rtc::scoped_refptr<webrtc::AudioEncoderFactory>, rtc::scoped_refptr<webrtc::AudioDecoderFactory>, std::__1::unique_ptr<webrtc::VideoEncoderFactory, std::__1::default_delete<webrtc::VideoEncoderFactory> >, std::__1::unique_ptr<webrtc::VideoDecoderFactory, std::__1::default_delete<webrtc::VideoDecoderFactory> >, rtc::scoped_refptr<webrtc::AudioMixer>, rtc::scoped_refptr<webrtc::AudioProcessing>, webrtc::AudioFrameProcessor*)
+```
+
+## 编译参数
+
+```
+-Wall # 即 Warning all 打开gcc的所有警告
+-Werror # 即 Warning as error. 它要求gcc将所有的警告当成错误进行处理。 会导致警告也导致编译失败。
+-v 查看编译流程
+```
+
