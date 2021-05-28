@@ -94,6 +94,43 @@ deps = {
 }
 ```
 
+deps 可以包含条件，满足条件才下载
+
+```
+deps = {
+  src/third_party/android_ndk': {
+      'url': 'https://chromium.googlesource.com/android_ndk.git@401019bf85744311b26c88ced255cd53401af8b7',
+      'condition': 'checkout_android',
+  }
+}
+```
+
+condition 在 gclient 中限定，用户指示目标平台。
+
+```python
+    def get_builtin_vars(self):
+    return {
+        'checkout_android': 'android' in self.target_os,
+        'checkout_chromeos': 'chromeos' in self.target_os,
+        'checkout_fuchsia': 'fuchsia' in self.target_os,
+        'checkout_ios': 'ios' in self.target_os,
+        'checkout_linux': 'unix' in self.target_os,
+        'checkout_mac': 'mac' in self.target_os,
+        'checkout_win': 'win' in self.target_os,
+        'host_os': _detect_host_os(),
+
+        'checkout_arm': 'arm' in self.target_cpu,
+        'checkout_arm64': 'arm64' in self.target_cpu,
+        'checkout_x86': 'x86' in self.target_cpu,
+        'checkout_mips': 'mips' in self.target_cpu,
+        'checkout_mips64': 'mips64' in self.target_cpu,
+        'checkout_ppc': 'ppc' in self.target_cpu,
+        'checkout_s390': 's390' in self.target_cpu,
+        'checkout_x64': 'x64' in self.target_cpu,
+        'host_cpu': detect_host_arch.HostArch(),
+    }
+```
+
 
 - Hooks：DEPS包含可选的内容 hooks，也有重要的作用，它表示在sync, update或者recert后，执行一个hook操作,也即执行对应的脚本；
 
