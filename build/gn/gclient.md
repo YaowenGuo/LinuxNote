@@ -236,12 +236,12 @@ target_os = ["linux", "android", "mac"]
 
 > gclient recurse
 
-在每个仓库中都执行一条g it 命令
+在每个仓库中都执行一条 git 命令
 
 > gclient fetch
 
 相当于每个仓库都执行了git fetch操作。
 
-类似还有 ` gclient status`, `gclient diff`等。
+类似还有 `gclient status`, `gclient diff`等。
 
 

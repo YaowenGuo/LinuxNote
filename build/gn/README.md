@@ -61,11 +61,19 @@ GN是一种元构建系统，来代替 GYP 生成 Ninja 构建文件（Ninja bui
 
 对于大型项目，**GN 也是随项目一起进行版本控制和分发的。** 例如 webrtc/chromium 项目的 gn 位于项目目录的 `buildtools/[mac/linux/win]` 目录中。`mac/linux/win`分别是苹果、linux和 Windows 的目录，具体在那个一个目录，要看你的电脑是什么平台，之前说过了，根据你的开发电脑不同，gn 能够下载不同的依赖。 depot_tools 下的 gn 并不是 gn 构建程序。实际上是一个用户查找 gn 的脚本。该脚本的查找过程是：
 
-- 先检查项目是否是 gclient 的项目，如果是,则使用 gclient 项目配置的 gn 目录。例如 chromium 在 `src/buildtools/[mac/linux/win]` 目录。
+- 先检查项目是否是 gclient 的项目，如果是
+    - 则使用 gclient 项目 DEPS 配置的目录。例如 chromium 在 `src/third_party/gn/` 目录。但是 `webrtc` 配置是在 `src/buildtools/[mac/linux/win]` 目录，所以需要改一下脚本。
+    
+- 如果不存在，则查看是否配置了 `CHROMIUM_BUILDTOOLS_PATH` 环境变，配置了，则拼接上 `/[mac/linux/win]/` 目录下的 gn.
 
-- 如果不存在，则使用 `CHROMIUM_BUILDTOOLS_PATH` 环境变量拼接上 `[mac/linux/win]/gn` 
+- 如果没有配置 `CHROMIUM_BUILDTOOLS_PATH` 会再次查找是否为 gclient 项目，不是，则结束查找，如果是：
+    - 则使用 gclient solution 配置文件中指定项目目录下的 `buildtools` 是否存在，如果存在使用 `buildtools/[mac/linux/win]/` 目录下的 gn.
+    - 如果 `buildtools//[mac/linux/win]/` 目录下的` 没有 gn, 则查看 `.gclient` 同级目录下是否有 `buildtools/[mac/linux/win]/`。
 
-然而遗憾的是，depot_tools 目录下并没有 gn 程序。因此需要配置 `CHROMIUM_BUILDTOOLS_PATH` 为 `chromium/webrtc` 等现有项目的目录，也可以根据官方文档，直接使用[自己编译 gn](https://gn.googlesource.com/gn/)). 然后将 `CHROMIUM_BUILDTOOLS_PATH` 设置为编译好的 gn 目录。
+- 以上都没有，则报错。
+
+
+然而遗憾的是，depot_tools 目录下并没有 gn 程序。因此需要配置 `CHROMIUM_BUILDTOOLS_PATH` 为 `chromium` 或 `webrtc` 等现有项目的目录，也可以根据官方文档，直接使用[自己编译 gn](https://gn.googlesource.com/gn/)). 然后将 `CHROMIUM_BUILDTOOLS_PATH` 设置为编译好的 gn 目录。
 
 另外，因为是使用 `depot_tools` 的 gn，要先[配置好 depot_tools 的 环境](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up)。
 

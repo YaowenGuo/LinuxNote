@@ -173,7 +173,7 @@ clang -c hello.s -o hello.o
 
 链接成为库文件可以分为两种：静态库（.a、.lib...）和动态库（.so、.dll...）windows上对应的是.lib .dll linux上对应的是.a .so。不同平台的文件名后缀可能不同。
 
-静态库：
+> 静态库：
 
 之所以称为【静态库】，是因为在链接阶段，将目标文件.o与引用到的库一起链接排列到可执行文件中。在运行时整个文件加载到内存运行。一个静态库可以简单看成是一组目标文件（.o/.obj文件）的集合。
 
@@ -184,15 +184,26 @@ clang -c hello.s -o hello.o
 ar -crv hello.a hello.o # 可以有更多 .o 文件。
 ```
 
-静态库：
+> 静态库：
 
 动态库在程序编译时并不会被连接到目标代码中，而是在程序运行是才被载入。不同的应用程序如果调用相同的库，那么在内存里只需要有一份该共享库的实例。
 
 ```shell
-gcc hello.s -shared -o hello.so
+clang hello.o -shared -o hello.so
 ```
 
 
+> 可执行文件
+
+```
+ld hello.o -o hello
+```
+
+但是要连接成为可运行程序，还需要链接系统库，如标准输入输出。这可能会出错，因为 ln 不知道这些信息。为此可以使用 clang 并显示详细链接的参数。
+
+```
+gcc hello.o -o hello -v
+```
 
 
 
@@ -202,10 +213,6 @@ gcc hello.s -shared -o hello.so
 > 查看操作内部命令，可以使用 -### 命令
 
 clang -### hello.cpp -o main
-
-> 想看清clang的全部过程，可以先通过-E查看clang在预编译处理这步做了什么。
-
-clang -E hello.cpp
 
 
 预处理完成后就会进行词法分析，这里会把代码切成一个个 Token，比如大小括号，等于号还有字符串等。
