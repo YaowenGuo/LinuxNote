@@ -24,9 +24,9 @@ solutions = [
     "url"         : "https://chromium.googlesource.com/chromium/src.git", # 项目检出的仓库。
     "custom_deps" : {
       # To use the trunk of a component instead of what's in DEPS:
-      #"component": "https://github.com/luci/luci-go",
+      #"src/component": "https://github.com/luci/luci-go",
       # To exclude a component from your working copy:
-      #"data/really_large_component": None,
+      #"src/data/really_large_component": None, // 路径需要加上项目的目录名，如 src.
     }
   },
 ]
@@ -57,6 +57,11 @@ target_os = []
 仅定义了一个 `entries` python 格式的字典。跟 `DEPS` 中 `deps` 格式一样。
 
 ## DEPS 文件
+
+include_rules 定义了包含路径。
+
+deps 定义了要下载的组件的目录和下载地址。
+
 
 ### 同步 gclient sync
 
@@ -245,3 +250,8 @@ target_os = ["linux", "android", "mac"]
 类似还有 `gclient status`, `gclient diff`等。
 
 
+## 同步指定版本
+
+进行同步时，可以指定特定分支。如需同步M74分支：
+
+# gclient sync -r cc1b32545db7823b85f5a83a92ed5f85970492c9
